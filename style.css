@@ -2,7 +2,9 @@
 
 
 
-
+body {
+    font-family: helvetica;
+}
 
 /* Talking about the main div */
 #app {
@@ -42,6 +44,49 @@
     width: 70vw;
     height: 70vh; */
 }
+
+#keys {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+
+    margin-left: 2rem;
+    margin-top: 2rem;
+    width: 13rem;
+}
+
+#key_w {
+
+}
+
+#key_a {
+
+}
+
+#key_s {
+
+}
+
+#key_d {
+
+}
+
+.key {
+    text-align: center;
+    border-radius: 3px;
+    border-color: #fff;
+    border: outset;
+}
+
+.on {
+    text: #fff;
+    background-color: #aaa;
+}
+
+.off {
+    text: #000;
+    background-color: #fff;
+}
+
 
 .row {
     display: grid;

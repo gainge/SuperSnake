@@ -12,7 +12,7 @@ const RIGHT = 3;
 
 const DEFAULT_DIR = RIGHT;
 
-const MAX_SNAKE = 100;
+const MAX_SNAKE = 200;
 
 const NUM_FOOD = 8;
 
@@ -1049,7 +1049,7 @@ var app = new Vue({
 
                     // And I guess advance Level if they ate all the foods
                 }
-                
+
                 this.startup = this.startup + 1;
                 if (this.startup >= this.length) {
                     this.gameState = S_PLAY;
@@ -1151,15 +1151,20 @@ $(document).on('keydown', function (e) {
     switch (e.keyCode) {
         case 87: // UP
             app.setNext(UP);
+            // Update the key
+            $("#key_w").removeClass('off').addClass('on');
             break;
         case 65: // LEFT
             app.setNext(LEFT);
+            $("#key_a").removeClass('off').addClass('on');
             break;
         case 83: // DOWN
             app.setNext(DOWN);
+            $("#key_s").removeClass('off').addClass('on');
             break;
         case 68: // RIGHT
             app.setNext(RIGHT);
+            $("#key_d").removeClass('off').addClass('on');
             break;
         case 80:
             app.gameState = S_PAUSE;
@@ -1190,6 +1195,27 @@ $(document).on('keydown', function (e) {
     }
     console.log(e.keyCode);
 });
+
+$(document).on('keyup', function (e) {
+    switch (e.keyCode) {
+        case 87: // UP
+            // Update the key
+            $("#key_w").removeClass('on').addClass('off');
+            break;
+        case 65: // LEFT
+            $("#key_a").removeClass('on').addClass('off');
+            break;
+        case 83: // DOWN
+            $("#key_s").removeClass('on').addClass('off');
+            break;
+        case 68: // RIGHT
+            $("#key_d").removeClass('on').addClass('off');
+            break;
+        default:
+            break;
+    }
+});
+
 
 
 
