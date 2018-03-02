@@ -1,0 +1,118 @@
+
+
+
+
+
+
+/* Talking about the main div */
+#app {
+
+}
+
+
+
+#game-info {
+    margin-top: 3rem;
+    margin-left: 2rem;
+    padding: 1rem;
+    background-color: #aaa;
+    width: 20rem;
+}
+
+#board {
+    display: grid;
+    grid-template-rows: repeat(30, 1fr);
+    grid-row-gap: 0.1rem;
+
+    background-color: #ccc;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -20rem;
+    margin-left: -20rem;
+
+    width: 40rem;
+    height: 40rem;
+
+    /* margin-top: -35vh;
+    margin-left: -35vw;
+
+
+    width: 70vw;
+    height: 70vh; */
+}
+
+.row {
+    display: grid;
+    grid-template-columns: repeat(30, 1fr);
+    grid-column-gap: 0.1rem;
+
+    width: 100%;
+    height: 100%;
+
+}
+
+.tile {
+
+    background-color: #eee;
+    width: 100%;
+    height: 100%;
+}
+
+.snake {
+    background-color: #069A02;
+    width: 100%;
+    height: 100%;
+}
+
+.food {
+    background-color: #002255;
+    border-radius: 0.5rem;
+    width: 100%;
+    height: 100%;
+}
+
+.black {
+    background-color: #000;
+    width: 100%;
+    height: 100%;
+}
+
+.white {
+    background-color: #fff;
+    width: 100%;
+    height: 100%;
+}
+
+.red {
+    background-color: #FB0500;
+    width: 100%;
+    height: 100%;
+}
+
+.yellow {
+    background-color: #EEF60F;
+    width: 100%;
+    height: 100%;
+}
+
+.green {
+    background-color: #069A02;
+    width: 100%;
+    height: 100%;
+}
+
+.l_green {
+    background-color: #96B809;
+    width: 100%;
+    height: 100%;
+}
+
+
+
+.text {
+    background-color: #89cff0;
+    width: 100%;
+    height: 100%;
+}
