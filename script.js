@@ -1,9 +1,11 @@
 const BOARD_SIZE = 30;
-const TICK_INTERVAL = 100;
 const START_X = BOARD_SIZE / 2;
 const START_Y = BOARD_SIZE / 2;
 const START_LENGTH = 5;
-const DEFAULT_SPEED = 1;
+
+const SECOND_LENGTH = 1000;
+const DEFAULT_SPEED = 10;        // Can be thought of as moves-per-second
+const TICK_INTERVAL = 10;
 
 const UP = 0;
 const DOWN = 1;
@@ -962,6 +964,7 @@ var app = new Vue({
                 // And I guess advance Level if they ate all the foods
             }
             else {
+                // Then just delete the tail
                 this.deleteTail();
             }
             /*Maybe do some other stuff here?*/
@@ -970,7 +973,6 @@ var app = new Vue({
                 console.log("Collision with body!");
                 this.gameState = S_END;
             }
-            // Then just delete the tail
 
             this.$forceUpdate();
         },
@@ -979,7 +981,6 @@ var app = new Vue({
             if (!(this.level - 1)) {
                 this.resetValues();
             }
-
 
             this.initBoard();
 
@@ -992,35 +993,44 @@ var app = new Vue({
             this.gameState = S_STARTUP;
         },
         startTimer: function() {
-            setInterval(this.gameTick, TICK_INTERVAL);
+            setTimeout(this.gameTick, TICK_INTERVAL);
         },
         gameTick: function() {
             console.log("Tick");
             if (this.gameState == S_STARTUP) {
-                this.setDirection(this.next_move);
-                this.addHead(this.direction);
-                this.$forceUpdate();
+                this.speed_inc += TICK_INTERVAL;    // Add the length of time between ticks
 
-                if (this.isFood(this.headX(), this.headY())) {
-                    this.numEaten++;
-                    this.length = this.length + 1;
-                    // Inc score
-                    this.score = this.score + this.level; // Just add the level amount
-
-                    // Remove food!
-                    this.removeFood(this.headX(), this.headY());
-
-                    // And I guess advance Level if they ate all the foods
+                if (this.speed_inc >= (SECOND_LENGTH / DEFAULT_SPEED)) {
+                    this.speed_inc = 0;
+                    
+                    this.setDirection(this.next_move);
+                    this.addHead(this.direction);
+                    this.$forceUpdate();
+    
+                    if (this.isFood(this.headX(), this.headY())) {
+                        this.numEaten++;
+                        this.length = this.length + 1;
+                        // Inc score
+                        this.score = this.score + this.level; // Just add the level amount
+    
+                        // Remove food!
+                        this.removeFood(this.headX(), this.headY());
+    
+                        // And I guess advance Level if they ate all the foods
+                    }
+    
+                    this.startup = this.startup + 1;
+                    if (this.startup >= this.length) {
+                        this.gameState = S_PLAY;
+                    }
                 }
-
-                this.startup = this.startup + 1;
-                if (this.startup >= this.length) {
-                    this.gameState = S_PLAY;
-                }
+                
             }
             else if (this.gameState == S_PLAY) {
-                this.speed_inc = this.speed_inc + this.speed;
-                if (this.speed_inc % 10) { // 10 just gives a good speed idk
+                this.speed_inc += TICK_INTERVAL;    // Add the length of time between ticks
+                // Check to see if we should moves
+                if (this.speed_inc >= (SECOND_LENGTH / DEFAULT_SPEED)) {
+                    this.speed_inc = 0;    // Reset!
                     this.moveSnake(this.direction);
 
                     // check for level advance
@@ -1080,6 +1090,8 @@ var app = new Vue({
 
                 this.gameState = S_STARTUP;
             }
+
+            setTimeout(this.gameTick, TICK_INTERVAL);
         },
         startGame() {
             this.legnth = START_LENGTH;
@@ -1178,76 +1190,3 @@ $(document).on('keyup', function (e) {
             break;
     }
 });
-
-
-
-
-// var app = new Vue({
-//     el: '#app',
-//     data: {
-//         todos: [],
-//         message: '',
-//         show: 'all',
-//         drag: {},
-//     },
-//     computed: {
-//         activeTodos: function() {
-//             return this.todos.filter(function(item) {
-//                 return !item.completed;
-//             });
-//         },
-//         filteredTodos: function() {
-//             if (this.show === 'active')
-//             return this.todos.filter(function(item) {
-//                 return !item.completed;
-//             });
-//             if (this.show === 'completed')
-//             return this.todos.filter(function(item) {
-//                 return item.completed;
-//             });
-//             return this.todos;
-//         },
-//     },
-//     methods: {
-//         addItem: function() {
-//             // Adds a new element to our "todos" list of items
-//             // Pushes an object with a text attribute and a completed attribute
-//             this.todos.push({text: this.message,completed:false});
-//             this.message = ''; // Reset the value in the text field
-//             // This is cool b/c it's a two way binding!  We can pull and push stuff into our html element
-//         },
-//         completeItem: function(item) {
-//             item.completed = !item.completed;
-//         },
-//         deleteItem: function(item) {
-//             var index = this.todos.indexOf(item);
-//             if (index > -1)
-//             this.todos.splice(index,1);
-//
-//         },
-//         showAll: function() {
-//             this.show = 'all';
-//         },
-//         showActive: function() {
-//             this.show = 'active';
-//         },
-//         showCompleted: function() {
-//             this.show = 'completed';
-//         },
-//         deleteCompleted: function() {
-//             this.todos = this.todos.filter(function(item) {
-//                 return !item.completed;
-//             });
-//         },
-//         dragItem: function(item) {
-//             this.drag = item;
-//         },
-//         dropItem: function(item) {
-//             var indexItem = this.todos.indexOf(this.drag);
-//             var indexTarget = this.todos.indexOf(item);
-//             this.todos.splice(indexItem,1);                 // Remove from indexItem, a total of 1 elements (just remove indexItem)
-//             this.todos.splice(indexTarget,0,this.drag);     // Don't remove any items, but add a new item after target
-//         },
-//     },
-//
-// });
