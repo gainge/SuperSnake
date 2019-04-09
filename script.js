@@ -58,22 +58,14 @@ var app = new Vue({
         numEaten: 0,
     },
     computed: {
-        easyCompute: function() {
-            return (2 + 2);
-        },
-        activeTodos: function() {
-            return this.todos.filter(function(item) {
-                return !item.completed;
-            });
-        },
+
     },
     methods: {
         isBody: function(x, y) {
-            for(var i = this.tail; i < this.head; i = (i + 1) % MAX_SNAKE){
-                if(this.snake[i].x == x){
-                    if (this.snake[i].y == y) {
-                        return true;
-                    }
+            for(var i = this.tail; i != this.head; i = (i + 1) % MAX_SNAKE){
+                if(this.snake[i].x == x &&
+                   this.snake[i].y == y) {
+                       return true;
                 }
             }
             return false;
@@ -889,18 +881,10 @@ var app = new Vue({
                         // Yes!
                         // Increment and update board
                         this.snake[this.head].y -= 1;
-
-                        // Update the board member
-                        this.board[this.headY()][this.headX()] = Object.assign({}, this.board[this.headY()][this.headX()], {
-                            snake:true,
-                            food:false,
-                            tile:false}
-                        );
                     }
                     else {
-                        // We can do wraparound here... but for now I think I'll just have them die
-                        this.gameState = S_END;
-                        console.log("Collision Moving Up");
+                        // Wrap to bottom
+                        this.snake[this.head].y = BOARD_SIZE - 1;
                     }
 
                     break;
@@ -908,21 +892,10 @@ var app = new Vue({
                     console.log("Move Down");
                     // Do we have room?
                     if (this.snake[this.head].y + 1 < BOARD_SIZE) {
-                        // Yes!
-                        // Increment and update board
                         this.snake[this.head].y += 1;
-
-                        // Update the board member
-                        this.board[this.headY()][this.headX()] = Object.assign({}, this.board[this.headY()][this.headX()], {
-                            snake:true,
-                            food:false,
-                            tile:false}
-                        );
                     }
                     else {
-                        // We can do wraparound here... but for now I think I'll just have them die
-                        this.gameState = S_END;
-                        console.log("Collision Moving Down");
+                        this.snake[this.head].y = 0;
                     }
 
                     break;
@@ -930,21 +903,11 @@ var app = new Vue({
                     console.log("Move Left");
                     // Do we have room?
                     if (this.snake[this.head].x > 0) {
-                        // Yes!
-                        // Increment and update board
                         this.snake[this.head].x -= 1;
-
-                        // Update the board member
-                        this.board[this.headY()][this.headX()] = Object.assign({}, this.board[this.headY()][this.headX()], {
-                            snake:true,
-                            food:false,
-                            tile:false}
-                        );
                     }
                     else {
-                        // We can do wraparound here... but for now I think I'll just have them die
-                        this.gameState = S_END;
-                        console.log("Collision Moving Left");
+                        // Wrap around to the right side
+                        this.snake[this.head].x = BOARD_SIZE - 1;
                     }
 
                     break;
@@ -955,27 +918,26 @@ var app = new Vue({
                         // Yes!
                         // Increment and update board
                         this.snake[this.head].x += 1;
-
-                        // Update the board member
-                        // this.board[this.headX()][this.headY()].tile = false;
-                        // this.board[this.headX()][this.headY()].snake = true;
-                        this.board[this.headY()][this.headX()] = Object.assign({}, this.board[this.headY()][this.headX()], {
-                            snake:true,
-                            food:false,
-                            tile:false}
-                        );
                     }
                     else {
-                        // We can do wraparound here... but for now I think I'll just have them die
-                        this.gameState = S_END;
-                        console.log("Collision Moving Right");
+                        this.snake[this.head].x = 0;
                     }
-
                     break;
             }
+
+            // Update the board member
+            var x = this.headX();
+            var y = this.headY();
+            this.board[y][x] = Object.assign({}, this.board[y][x], {
+                snake:true,
+                food:false,
+                tile:false}
+            );
         },
         deleteTail: function() {
-            this.board[this.tailY()][this.tailX()] = Object.assign({}, this.board[this.tailY()][this.tailX()], {
+            var x = this.tailX();
+            var y = this.tailY();
+            this.board[y][x] = Object.assign({}, this.board[y][x], {
                 snake:false,
                 food:false,
                 tile:true}
@@ -985,7 +947,7 @@ var app = new Vue({
         },
         moveSnake: function(dir) {
             this.setDirection(this.next_move); // Protects against crappy input
-            // Erase the tail's current pos
+            // Move the snake's head
             this.addHead(dir);
             this.$forceUpdate();
             if (this.isFood(this.headX(), this.headY())) {
@@ -1005,6 +967,7 @@ var app = new Vue({
             /*Maybe do some other stuff here?*/
             // Like collision checking??
             if (this.isBody(this.headX(), this.headY())) {
+                console.log("Collision with body!");
                 this.gameState = S_END;
             }
             // Then just delete the tail
